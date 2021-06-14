@@ -16,3 +16,7 @@ componentify <- function(x) {
     stop("dash2: layout must be a dash component or list of dash components", call. = FALSE)
   }
 }
+
+remove_empty <- function(x) {
+  Filter(Negate(is.null), x)
+}
