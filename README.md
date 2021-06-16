@@ -15,7 +15,7 @@ app$layout(
   htmlDiv(
     list(
       htmlH1('Hello Dash'),
-      htmlDiv(children = "Dash: A web application framework for R."),
+      htmlDiv(children = list("Dash: ", "A web application framework for R.")),
       dccGraph(
         figure=list(
           data=list(
@@ -41,7 +41,7 @@ app$layout(
 
 app$title("My app")
 
-app$run_server()
+app$run_server(port = 8060)
 ```
 
 Using new {dash2}:
@@ -52,8 +52,8 @@ library(dash2)
 app <- dash_app("My app")
 
 app %>% set_layout(
-  htmlH1('Hello Dash'),
-  htmlDiv(children = "Dash: A web application framework for R."),
+  h1('Hello Dash'),
+  div("Dash: ", "A web application framework for R."),
   dccGraph(
     figure=list(
       data=list(
