@@ -1,3 +1,5 @@
+#' Document that className and htmlFor is used instead of class and for
+#' Document that style is given as a list rather than a string
 #' @export
 dash_tag <- function(tag_name, content = list(), n_clicks = NULL) {
   content_names <- rlang::names2(content)
