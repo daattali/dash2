@@ -246,8 +246,8 @@ set_layout <- function(app, ...) {
 #' @param browser Whether or not to launch a browser to the app's URL.
 #' @export
 run_app <- function(app,
-                    host = Sys.getenv("HOST", "127.0.0.1"),
-                    port = Sys.getenv("PORT", 8050),
+                    host = Sys.getenv("DASH_HOST", Sys.getenv("HOST", "127.0.0.1")),
+                    port = Sys.getenv("DASH_PORT", Sys.getenv("PORT", 8050)),
                     browser = interactive()) {
   assert_dash(app)
   if (browser) {
@@ -256,8 +256,8 @@ run_app <- function(app,
       url <- paste0("http://", url)
     }
     utils::browseURL(url)
-    app$run_server(host = host, port = port)
   }
+  app$run_server(host = host, port = port)
 }
 
 #' Is the given object a Dash app?

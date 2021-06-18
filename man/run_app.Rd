@@ -6,8 +6,8 @@
 \usage{
 run_app(
   app,
-  host = Sys.getenv("HOST", "127.0.0.1"),
-  port = Sys.getenv("PORT", 8050),
+  host = Sys.getenv("DASH_HOST", Sys.getenv("HOST", "127.0.0.1")),
+  port = Sys.getenv("DASH_PORT", Sys.getenv("PORT", 8050)),
   browser = interactive()
 )
 }
