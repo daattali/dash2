@@ -17,6 +17,9 @@ dash_tag <- function(tag_name, content = list(), n_clicks = NULL, n_clicks_times
   tag_params[["loading_state"]] <- loading_state
 
   dash_html_fx <- paste0("html", toupper(substring(tag_name, 1, 1)), substring(tag_name, 2))
+  if (tag_name %in% c("map", "object")) {
+    dash_html_fx <- paste0(dash_html_fx, "El")
+  }
 
   do.call(getExportedValue("dashHtmlComponents", dash_html_fx), tag_params)
 }
