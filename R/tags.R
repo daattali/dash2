@@ -5,6 +5,10 @@ dash_tag <- function(tag_name, content = list(), n_clicks = NULL, n_clicks_times
   attributes <- remove_empty(content[content_named_idx])
   children <- unname(content[!content_named_idx])
 
+  # Support empty attributes
+  attributes[is.na(attributes)] <- names(attributes[is.na(attributes)])
+  attributes[attributes == ""] <- names(attributes[attributes == ""])
+
   tag_params <- attributes
   tag_params[["children"]] <- children
   tag_params[["n_clicks"]] <- n_clicks
