@@ -1,5 +1,104 @@
-#' Document that className and htmlFor is used instead of class and for
-#' Document that style is given as a list rather than a string
+#' Create HTML tags
+#'
+#' Create an HTML tag to place in a Dash app layout. All tags are available
+#' in the `html` list, and some common tags have shortcuts as functions for
+#' convenience (e.g. `h1()` produces `<h1>` and is equivalent to `html$h1()`).
+#'
+#' @name tags
+#' @param ... Any named arguments become tag attributes, and any unnamed
+#' arguments become children. A named argument with a value of `NULL` will
+#' be removed, and a named argument with a value of `NA` will be rendered
+#' as a boolean argument. See 'Special attributes' below for more information.
+#' @param n_clicks (Numeric) An integer that represents the number of times
+#' that this element has been clicked on. For advanced users only.
+#' @param tag_name The name of the HTML tag.
+#' @param content List of attributes and children.
+#'
+#' @section Special attributes:
+#' There are a few HTML attributes that are treated in a special way:
+#' - To add a `class` attribute, use the `className` parameter
+#' - To add a `for` attribute, use the `htmlFor` parameter
+#' - The `style` attribute is not provided as a string. Instead, it's provided
+#' as a named list, where the name and value of each element correspond to the
+#' CSS property and value. Each CSS property should be written in camelCase.
+#'
+#' @examples
+#' app <- dash_app()
+#' app %>% set_layout(
+#'   html$div(
+#'     h1(
+#'       "title",
+#'       style = list(
+#'         "color" = "red",
+#'         "backgroundColor" = "blue"
+#'       )
+#'     ),
+#'     "some text",
+#'     button(
+#'       "can't click me",
+#'       disabled = NA,
+#'       className = "mybtn"
+#'     )
+#'   )
+#' )
+#' app %>% run_app()
+#'
+NULL
+
+#' @rdname tags
+#' @format NULL
+#' @export
+html <- lapply(all_tags, function(tag_name) {
+  rlang::new_function(
+    args = alist(... = , n_clicks = NULL),
+    body = rlang::expr({
+      dash_tag(!!tag_name, list(...), n_clicks = n_clicks)
+    }),
+    env = asNamespace("dash2")
+  )
+})
+
+#' @rdname tags
+#' @export
+h1 <- html$h1
+
+#' @rdname tags
+#' @export
+h2 <- html$h2
+
+#' @rdname tags
+#' @export
+h3 <- html$h3
+
+#' @rdname tags
+#' @export
+h4 <- html$h4
+
+#' @rdname tags
+#' @export
+div <- html$div
+
+#' @rdname tags
+#' @export
+span <- html$span
+
+#' @rdname tags
+#' @export
+p <- html$p
+
+#' @rdname tags
+#' @export
+strong <- html$strong
+
+#' @rdname tags
+#' @export
+br <- html$br
+
+#' @rdname tags
+#' @export
+button <- html$button
+
+#' @rdname tags
 #' @export
 dash_tag <- function(tag_name, content = list(), n_clicks = NULL) {
   content_names <- rlang::names2(content)
@@ -7,7 +106,7 @@ dash_tag <- function(tag_name, content = list(), n_clicks = NULL) {
   attributes <- remove_empty(content[content_named_idx])
   children <- unname(content[!content_named_idx])
 
-  # Support empty attributes
+  # Support boolean attributes
   attributes[is.na(attributes)] <- names(attributes[is.na(attributes)])
   attributes[attributes == ""] <- names(attributes[attributes == ""])
 
@@ -22,44 +121,3 @@ dash_tag <- function(tag_name, content = list(), n_clicks = NULL) {
 
   do.call(getExportedValue("dashHtmlComponents", dash_html_fx), tag_params)
 }
-
-#' @export
-html <- lapply(all_tags, function(tag_name) {
-  rlang::new_function(
-    args = alist(... = , n_clicks = NULL),
-    body = rlang::expr({
-      dash_tag(!!tag_name, list(...), n_clicks = n_clicks)
-    }),
-    env = asNamespace("dash2")
-  )
-})
-
-#' @export
-h1 <- html$h1
-
-#' @export
-h2 <- html$h2
-
-#' @export
-h3 <- html$h3
-
-#' @export
-h4 <- html$h4
-
-#' @export
-div <- html$div
-
-#' @export
-span <- html$span
-
-#' @export
-p <- html$p
-
-#' @export
-strong <- html$strong
-
-#' @export
-br <- html$br
-
-#' @export
-button <- html$button

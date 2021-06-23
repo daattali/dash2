@@ -90,4 +90,4 @@ To add stylesheets/javascript, call `app %>% add_stylesheet()` or `app %>% add_s
 
 Note that a browser session will automatically be launched.
 
-All HTML tags are available with the `html` list. Any tag can take an arbitrary number of parameters; named parameters become attributes, and non-named parameters become children. For example, to create `<div title="foo">bar</div>`, use `html$div(title = "foo", "bar")`. Some common HTML tags are upgraded to functions for convenience, for example you can use `div()` or `h1()` instead of `html$div()` or `html$h1()`.
+All HTML tags are available with the `html` list. Any tag can take an arbitrary number of arguments; named arguments become attributes, and unnamed arguments become children. For example, to create `<div title="foo">bar</div>`, use `html$div(title = "foo", "bar")`. Some common HTML tags are upgraded to functions for convenience, for example you can use `div()` or `h1()` instead of `html$div()` or `html$h1()`.
