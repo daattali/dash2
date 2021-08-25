@@ -106,6 +106,8 @@ dash_tag <- function(tag_name, content = list(), n_clicks = NULL) {
   attributes <- remove_empty(content[content_named_idx])
   children <- unname(content[!content_named_idx])
 
+  if (length(children) == 1) children <- children[[1]]
+
   # Support boolean attributes
   attributes[is.na(attributes)] <- names(attributes[is.na(attributes)])
   attributes[attributes == ""] <- names(attributes[attributes == ""])
