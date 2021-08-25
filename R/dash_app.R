@@ -157,7 +157,7 @@ add_script <- function(app, script) {
 #' app %>% set_layout("Conditional UI using an if statement: ",
 #'                    if (TRUE) "rendered",
 #'                    if (FALSE) "not rendered")
-#' app %>% set_layout(function() { htmlDiv(children = list(htmlDiv("hello"), "Dash")) })
+#' app %>% set_layout(function() { div("Current time: ", Sys.time()) })
 #' @export
 set_layout <- function(app, ...) {
   assert_dash(app)
