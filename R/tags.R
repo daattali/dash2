@@ -100,6 +100,14 @@ button <- html$button
 
 #' @rdname tags
 #' @export
+a <- html$a
+
+#' @rdname tags
+#' @export
+img <- html$img
+
+#' @rdname tags
+#' @export
 dash_tag <- function(tag_name, content = list(), n_clicks = NULL) {
   content_names <- rlang::names2(content)
   content_named_idx <- nzchar(content_names)

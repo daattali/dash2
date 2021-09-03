@@ -14,6 +14,8 @@
 \alias{strong}
 \alias{br}
 \alias{button}
+\alias{a}
+\alias{img}
 \alias{dash_tag}
 \title{Create HTML tags}
 \usage{
@@ -38,6 +40,10 @@ strong(..., n_clicks = NULL)
 br(..., n_clicks = NULL)
 
 button(..., n_clicks = NULL)
+
+a(..., n_clicks = NULL)
+
+img(..., n_clicks = NULL)
 
 dash_tag(tag_name, content = list(), n_clicks = NULL)
 }
