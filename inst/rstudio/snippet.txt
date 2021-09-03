@@ -1,0 +1,14 @@
+snippet dashapp
+	library(dash2)
+
+	app <- dash_app()
+
+	app %>% set_layout(
+		${1}
+	)
+
+	app %>% add_callback(
+		${2}
+	)
+
+	app %>% run_app()
