@@ -201,6 +201,13 @@ run_app <- function(app,
   app$run_server(host = host, port = port)
 }
 
+#' Run a Dash app when explicitly printed to the console
+#' @export
+#' @keywords internal
+print.Dash <- function(x, ...) {
+  run_app(x)
+}
+
 #' Is the given object a Dash app?
 #' @param x Any object.
 #' @export
