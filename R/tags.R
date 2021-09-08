@@ -116,7 +116,12 @@ dash_tag <- function(tag_name, content = list()) {
   attributes <- remove_empty(content[content_named_idx])
   children <- unname(content[!content_named_idx])
 
-  if (length(children) == 1) children <- children[[1]]
+  # Try to match the exact level of nesting of children as original {dash}
+  if (length(children) == 0) {
+    children <- NULL
+  } else if (length(children) == 1) {
+    children <- children[[1]]
+  }
 
   # Support boolean attributes
   attributes[is.na(attributes)] <- names(attributes[is.na(attributes)])
