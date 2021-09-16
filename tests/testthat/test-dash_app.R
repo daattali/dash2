@@ -39,8 +39,61 @@ test_that("add_stylesheet", {
     integrity = "sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x"
   )
 
-
+  expect_error(add_stylesheet(sheet_simple1))
+  expect_identical(
+    dash_app() %>% add_stylesheet(sheet_simple1) %>% get_sheets(),
+    Dash$new(external_stylesheets = list(sheet_simple1)) %>% get_sheets()
+  )
+  expect_identical(
+    dash_app() %>% add_stylesheet(sheet_simple1) %>% get_sheets(),
+    dash_app() %>% add_stylesheet(list(sheet_simple1)) %>% get_sheets()
+  )
+  expect_identical(
+    dash_app() %>% add_stylesheet(list(sheet_simple1, sheet_simple2)) %>% get_sheets(),
+    Dash$new(external_stylesheets = list(sheet_simple1, sheet_simple2)) %>% get_sheets()
+  )
+  expect_identical(
+    dash_app() %>% add_stylesheet(sheet_full) %>% get_sheets(),
+    Dash$new(external_stylesheets = list(sheet_full)) %>% get_sheets()
+  )
+  expect_identical(
+    dash_app() %>% add_stylesheet(list(sheet_simple1, sheet_simple2)) %>% add_stylesheet(sheet_full) %>% get_sheets(),
+    Dash$new(external_stylesheets = list(sheet_simple1, sheet_simple2, sheet_full)) %>% get_sheets()
+  )
 })
 
 test_that("add_script", {
+
+  get_scripts <- function(app) {
+    app$.__enclos_env__$self$config$external_scripts
+  }
+
+  script_simple1 <- "https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+  script_simple2 <- "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
+  script_full <- list(
+    src = "https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js",
+    integrity = "sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+  )
+
+  expect_error(add_script(script_simple1))
+  expect_identical(
+    dash_app() %>% add_script(script_simple1) %>% get_scripts(),
+    Dash$new(external_scripts = list(script_simple1)) %>% get_scripts()
+  )
+  expect_identical(
+    dash_app() %>% add_script(script_simple1) %>% get_scripts(),
+    dash_app() %>% add_script(list(script_simple1)) %>% get_scripts()
+  )
+  expect_identical(
+    dash_app() %>% add_script(list(script_simple1, script_simple2)) %>% get_scripts(),
+    Dash$new(external_scripts = list(script_simple1, script_simple2)) %>% get_scripts()
+  )
+  expect_identical(
+    dash_app() %>% add_script(script_full) %>% get_scripts(),
+    Dash$new(external_scripts = list(script_full)) %>% get_scripts()
+  )
+  expect_identical(
+    dash_app() %>% add_script(list(script_simple1, script_simple2)) %>% add_script(script_full) %>% get_scripts(),
+    Dash$new(external_scripts = list(script_simple1, script_simple2, script_full)) %>% get_scripts()
+  )
 })
