@@ -16,6 +16,8 @@ dash_app <- function(title = NULL, ...) {
     app$title(title)
   }
 
+  class(app) <- c("dash2", class(app))
+
   invisible(app)
 }
 
@@ -204,7 +206,7 @@ run_app <- function(app,
 #' Run a Dash app when explicitly printed to the console
 #' @export
 #' @keywords internal
-print.Dash <- function(x, ...) {
+print.dash2 <- function(x, ...) {
   run_app(x)
 }
 
