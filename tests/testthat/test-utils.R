@@ -16,3 +16,53 @@ test_that("assert_dash", {
   expect_true(assert_dash(dash_app()))
   expect_true(assert_dash(set_layout(dash_app(), "test")))
 })
+
+test_that("componentify basics", {
+  expect_error(componentify())
+  expect_error(componentify(mtcars))
+  expect_error(componentify(c("foo", "bar")))
+  expect_null(componentify(NULL))
+  expect_identical(
+    componentify(div("foo")),
+    div("foo")
+  )
+  expect_identical(
+    componentify(dashCoreComponents::dccInput("foo", "bar")),
+    dashCoreComponents::dccInput("foo", "bar")
+  )
+})
+
+test_that("componentify simple child", {
+  expect_identical(
+    componentify(10),
+    span(10)
+  )
+  expect_identical(
+    componentify("foo"),
+    span("foo")
+  )
+  expect_identical(
+    componentify(TRUE),
+    span(TRUE)
+  )
+})
+
+test_that("componentify list", {
+  expect_identical(
+    componentify(list("foo", "bar")),
+    div(span("foo"), span("bar"))
+  )
+  expect_identical(
+    componentify(list("foo", "bar")),
+    div(span("foo"), span("bar"))
+  )
+  expect_identical(
+    componentify(list("foo", dashCoreComponents::dccInput("foo", "bar"), 10, div("bar"))),
+    div(
+      span("foo"),
+      dashCoreComponents::dccInput("foo", "bar"),
+      span(10),
+      div("bar")
+    )
+  )
+})

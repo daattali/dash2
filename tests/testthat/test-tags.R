@@ -3,6 +3,10 @@ test_that("Tag basics", {
   expect_identical(div("a", "b", 5), dashHtmlComponents::htmlDiv(list("a", "b", 5)))
   expect_identical(div("a", "b", 5, id = "test"), dashHtmlComponents::htmlDiv(list("a", "b", 5), id = "test"))
   expect_identical(
+    span("a", 5, id = "test", "b", className = "foo"),
+    dashHtmlComponents::htmlSpan(list("a", 5, "b"), id = "test", className = "foo")
+  )
+  expect_identical(
     div(span("test"), dashCoreComponents::dccInput("input")),
     dashHtmlComponents::htmlDiv(list(dashHtmlComponents::htmlSpan("test"), dashCoreComponents::dccInput("input")))
   )
