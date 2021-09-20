@@ -13,8 +13,11 @@ Depends:
     dash (>= 1.0.0)
 Imports:
     magrittr,
+    methods,
     rlang,
     utils
+Suggests: 
+    testthat (>= 3.0.0)
 License: MIT + file LICENSE
 LazyData: true
 Encoding: UTF-8

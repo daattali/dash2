@@ -1,140 +1,117 @@
-`$.dash_input` <- function(x, i) {
-  if (is.null(.subset2(x, i))) {
-    new_i <- sprintf("%s.value", i)
-    if (!is.null(.subset2(x, new_i))) {
-      i <- new_i
-    }
-  }
-  NextMethod()
-}
-
-`[[.dash_input` <- function(x, i) {
-  if (is.null(.subset2(x, i))) {
-    new_i <- sprintf("%s.value", i)
-    if (!is.null(.subset2(x, new_i))) {
-      i <- new_i
-    }
-  }
-  NextMethod()
-}
-
-`[.dash_input` <- function(x, i) {
-  for (j in seq_along(i)) {
-    if (is.null(.subset2(x, i[j]))) {
-      new_i <- sprintf("%s.value", i[j])
-      if (!is.null(.subset2(x, new_i))) {
-        i[j] <- new_i
-      }
-    }
-  }
-  val <- NextMethod()
-  structure(val, class = "dash_input")
-}
-
+#' Add a callback to a Dash app
+#'
+#' @param app A dash application created with [`dash_app()`].
 #' TODO document
+#' TODO make sure clientside callbacks work https://dashr.plotly.com/clientside-callbacks
+#' TODO consider making property=value and property=children the default for input/output (looking through many example apps, it's very common)
+#' TODO consider allowing user to pass in a string instead of a input/output object
 #' @export
-add_callback <- function(app, outputs, inputs, states, callback) {
-  if (is.function(states)) {
-    warning("add_callback: It looks like the callback was passed into the `states` argument.", call. = FALSE)
-    callback <- states
-    states <- NULL
-  }
-  if (inherits(outputs, "dash_dependency")) {
-    # do nothing
-  } else {
-    if (length(outputs) == 1) {
-      outputs <- dash::output(outputs, "children")
-    } else {
-      outputs <- lapply(outputs, function(val) {
-        if (is.character(val)) {
-          dash::output(val, "children")
-        } else {
-          val
-        }
-      })
-    }
+add_callback <- function(app, outputs, params, callback) {
+  if (inherits(params, "dash_dependency")) {
+    params <- list(params)
   }
 
-  if (inherits(inputs, "dash_dependency")) {
-    inputs <- list(inputs)
-  } else {
-    inputs <- lapply(inputs, function(val) {
-      if (is.character(val)) {
-        dash::input(val, "value")
-      } else {
-        val
-      }
-    })
+  params_flat <- flatten(params)
+
+  # determine if the callback arguments match the first level of parameters
+  cb_args <- methods::formalArgs(callback)
+  if (length(cb_args) != length(params)) {
+    stop("add_callback: Number of params does not match the number of arguments in the callback function", call. = FALSE)
   }
-  if (inherits(states, "dash_dependency")) {
-    states <- list(states)
-  } else {
-    states <- lapply(states, function(val) {
-      if (is.character(val)) {
-        dash::state(val, "value")
-      } else {
-        val
-      }
-    })
+  if (!is.null(names(params))) {
+    if (!setequal(cb_args, names(params))) {
+      stop("add_callback: Arguments in callback do not match the names of the params",
+           call. = FALSE)
+    }
   }
 
   cb <- function(...) {
-    params <- eval(substitute(alist(...)))
-    input_names <- unlist(lapply(inputs, function(val) {
-      if (is.null(val[["name"]])) {
-        sprintf("%s.%s", val[["id"]], val[["property"]])
-      } else {
-        val[["name"]]
-      }
-    }))
-    state_names <- unlist(lapply(states, function(val) {
-      if (is.null(val[["name"]])) {
-        sprintf("%s.%s", val[["id"]], val[["property"]])
-      } else {
-        val[["name"]]
-      }
-    }))
-    param_names <- c(input_names, state_names)
-    input <- structure(
-      stats::setNames(params, param_names),
-      class = "dash_input"
-    )
+    callback_params <- eval(substitute(alist(...)))
 
-    callback(input)
+    # the callback moves states to the end after inputs, so we need to fix the positions
+    state_idx <- which(unlist(lapply(params_flat, function(x) inherits(x, "state"))))
+    num_states <- length(state_idx)
+    if (num_states > 0) {
+      num_inputs <- length(callback_params) - num_states
+      for (i in seq_len(num_states)) {
+        idx <- num_inputs + i
+        callback_params <- append(callback_params, callback_params[[idx]], state_idx[i] - 1)
+        callback_params <- callback_params[-(idx + 1)]
+      }
+    }
+
+    callback_params <- params_to_keys(callback_params, params)
+    do.call(callback, callback_params)
   }
 
   app$callback(
     output = outputs,
-    params = c(inputs, states),
+    params = params_flat,
     func = cb
   )
   invisible(app)
 }
 
-#' TODO document
-#' @export
-input <- function(id, property = "value", name = NULL) {
-  val <- dash::input(id = id, property = property)
-  if (!is.null(name)) {
-    if (isTRUE(name)) {
-      val[["name"]] <- id
-    } else {
-      val[["name"]] <- name
+# test <- list(
+#   ab = list(
+#     input("a", "value"),
+#     state("b", "value")
+#   ),
+#   cdef = list(
+#     cde = list(
+#       input("c", "value"),
+#       state("d", "value"),
+#       input("e", "value")
+#     ),
+#     f = input("f", "value")
+#   ),
+#   g = input("g", "value")
+# )
+# str(flatten(test))
+flatten <- function(x) {
+  if (!inherits(x, "list")) return(list(x))
+
+  key_names <- rlang::names2(x)
+  key_names_exist <- nzchar(key_names)
+  if (all(key_names_exist)) {
+    if (any(duplicated(key_names))) {
+      stop("Named params must have unique names", call. = FALSE)
     }
+    x <- unname(x)
+  } else if (any(key_names_exist)) {
+    stop("Cannot mix named and unnamed params", call. = FALSE)
   }
-  val
+
+  unlist(lapply(x, flatten), recursive = FALSE)
 }
 
-#' TODO document
-#' @export
-state <- function(id, property = "value", name = NULL) {
-  val <- dash::state(id = id, property = property)
-  if (!is.null(name)) {
-    if (isTRUE(name)) {
-      val[["name"]] <- id
-    } else {
-      val[["name"]] <- name
+# test <- list(
+#   ab = list(
+#     input("a", "value"),
+#     state("b", "value")
+#   ),
+#   cdef = list(
+#     cde = list(
+#       input("c", "value"),
+#       state("d", "value"),
+#       input("e", "value")
+#     ),
+#     f = input("f", "value")
+#   ),
+#   g = input("g", "value")
+# )
+# str(params_to_keys(as.list(LETTERS[1:7]), test))
+params_to_keys <- function(params, keys) {
+  params_to_key_helper <- function(keys) {
+    for (item_idx in seq_along(keys)) {
+      if (inherits(keys[[item_idx]], "dash_dependency")) {
+        keys[[item_idx]] <- params[[1]]
+        params <<- params[-1]
+      } else {
+        keys[[item_idx]] <- params_to_key_helper(keys[[item_idx]])
+      }
     }
+    keys
   }
-  val
+  params_to_key_helper(keys)
 }
