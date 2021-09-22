@@ -7,11 +7,7 @@
 add_callback(app, outputs, params, callback)
 }
 \arguments{
-\item{app}{A dash application created with \code{\link[=dash_app]{dash_app()}}.
-TODO document
-TODO make sure clientside callbacks work https://dashr.plotly.com/clientside-callbacks
-TODO consider making property=value and property=children the default for input/output (looking through many example apps, it's very common)
-TODO consider allowing user to pass in a string instead of a input/output object}
+\item{app}{A dash application created with \code{\link[=dash_app]{dash_app()}}.}
 }
 \description{
 Add a callback to a Dash app

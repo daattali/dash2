@@ -8,15 +8,14 @@ dash_app() %>%
   ) %>%
   add_callback(
     list(
-      "out1",
+      output("out1", "children"),
       output("out2", "children")
     ),
-    "text",
-    list(),
-    function(input) {
+    input("text", "value"),
+    function(text) {
       list(
-        toupper(input$text),
-        tolower(input$text)
+        toupper(text),
+        tolower(text)
       )
     }
   ) %>%

@@ -18,17 +18,17 @@ dash_app() \%>\%
     div(id='container')
   ) \%>\%
   add_callback(
-    "container",
+    output("container", "children"),
     list(
       input("btn1", "n_clicks"),
       input("btn2", "n_clicks"),
       input("btn3", "n_clicks")
     ),
-    function(input) {
+    function(btn1, btn2, btn3) {
       ctx <- callback_context()
       prevent_update(is.null(ctx))
       sprintf("Triggered: \%s, btn1: \%s, btn2: \%s, btn3: \%s",
-              ctx$triggered$prop_id, input$btn1, input$btn2, input$btn3)
+              ctx$triggered$prop_id, btn1, btn2, btn3)
     }
   ) \%>\%
   run_app()

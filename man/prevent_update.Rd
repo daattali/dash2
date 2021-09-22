@@ -21,7 +21,7 @@ app \%>\% set_layout(
   p('The number of times the button was clicked does not update when the number is divisible by 5'),
   div(id = 'body-div')
 )
-app$callback(
+app \%>\% add_callback(
   output(id='body-div', property='children'),
   list(
     input(id='btn', property='n_clicks')

@@ -1,11 +1,9 @@
 # {dash2} rewrite of the TO-DO app from https://dashr.plotly.com/pattern-matching-callbacks
 
-library(dash)
-library(dashCoreComponents)
 library(dash2)
+library(dashCoreComponents)
 
 app <- dash_app()
-
 
 app %>% set_layout(
   div('Dash To-Do List'),
@@ -23,23 +21,18 @@ style_done <- list("display" = "inline", "margin" = "10px", "textDecoration" = "
 
 app %>% add_callback(
   list(
-    "list-container",
+    output("list-container", "children"),
     output("new-item", "value")
   ),
   list(
-    input("add", "n_clicks", name = TRUE),
-    input("new-item", "n_submit", name = "submit"),
-    input("clear-done", "n_clicks", name = "clear")
+    add = input("add", "n_clicks"),
+    submit = input("new-item", "n_submit"),
+    clean = input("clear-done", "n_clicks"),
+    new_item = state("new-item", "value"),
+    items = state(list("index" = ALL, "type" = "check"), "children"),
+    items_done = state(list("index" = ALL, "type" = "done"), "value")
   ),
-  list(
-    state("new-item", name = "new_item"),
-    state(list("index" = ALL, "type" = "check"), "children", name = "checkboxes"),
-    state(list("index" = ALL, "type" = "done"), "value")
-  ),
-  function(input) {
-    items <- input$checkboxes
-    items_done <- input[[6]]
-
+  function(add, submit, clean, new_item, items, items_done) {
     ctx <- app$callback_context()
     triggered <- ifelse(is.null(ctx$triggered$prop_id), " ", ctx$triggered$prop_id)
     adding <- grepl(triggered, "add.n_clicks|new-item.n_submit")
@@ -72,7 +65,7 @@ app %>% add_callback(
 
     # Add a new item to the list
     if (adding) {
-      new_spec[[length(new_spec) + 1]] <- list(input$new_item, list())
+      new_spec[[length(new_spec) + 1]] <- list(new_item, list())
     }
 
     # Generate dynamic components with pattern matching IDs
@@ -93,29 +86,29 @@ app %>% add_callback(
           style = list("clear" = "both")))
         new_list <- c(new_list, add_list)
       }
-      return(list(new_list, ""))
+      list(new_list, "")
     } else {
-      return(list(list(), ""))
+      list(list(), "")
     }
   }
 )
 
 app %>% add_callback(
   output(id = list("index" = MATCH, "type" = "check"), property = "style"),
-  input(id = list("index" = MATCH, "type" = "done"), name = "dones"),
-  function(input) {
-    if (length(input$dones[[1]] > 0)) return(style_done) else return(style_todo)
+  input(id = list("index" = MATCH, "type" = "done"), "value"),
+  function(dones) {
+    if (length(dones[[1]] > 0)) return(style_done) else return(style_todo)
   }
 )
 
 
 app %>% add_callback(
-  "totals",
-  input(list("index" = ALL, "type" = "done"), name = "dones"),
-  state(list("index" = ALL, "type" = "check"), property = "children", name = "total"),
-  function(input) {
-    done <- input$dones
-    total <- input$total
+  output("totals", "children"),
+  list(
+    input(list("index" = ALL, "type" = "done"), "value"),
+    state(list("index" = ALL, "type" = "check"), property = "children")
+  ),
+  function(done, total) {
     count_all = length(total)
     count_done = length(done)
 

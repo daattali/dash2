@@ -18,10 +18,10 @@
 #'     div(id = "table")
 #'   )
 #'
-#' app$callback(
-#'   output = output(id = 'table', property = 'children'),
-#'   params = list(input(id = 'table_params', property = 'value')),
-#'   func = function(val) {
+#' app %>% add_callback(
+#'   output(id = 'table', property = 'children'),
+#'   input(id = 'table_params', property = 'value'),
+#'   function(val) {
 #'     simple_table(mtcars, colnames = "colnames" %in% val, rownames = "rownames" %in% val)
 #'   }
 #' )
