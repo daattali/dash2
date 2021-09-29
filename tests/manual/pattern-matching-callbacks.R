@@ -5,7 +5,7 @@ library(dashCoreComponents)
 
 dash_app() %>%
   set_layout(
-    button("Add Filter", id = "add-filter"),
+    button("Add Filter", id = "add-filter", n_clicks = 0),
     div(id="dropdown-container"),
     div(id="dropdown-container-output")
   ) %>%
