@@ -51,7 +51,7 @@ dash_tag(tag_name, content = list())
 \item{...}{Any named arguments become tag attributes, and any unnamed
 arguments become children. A named argument with a value of \code{NULL} will
 be removed, and a named argument with a value of \code{NA} will be rendered
-as a boolean argument. See 'Special attributes' below for more information.}
+as a boolean attribute. See 'Special attributes' below for more information.}
 
 \item{tag_name}{The name of the HTML tag.}
 

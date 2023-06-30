@@ -8,7 +8,18 @@ add_callback(app, outputs, params, callback)
 }
 \arguments{
 \item{app}{A dash application created with \code{\link[=dash_app]{dash_app()}}.}
+
+\item{outputs}{An \code{\link[dash:dependencies]{output}} or a list of
+\code{\link[dash:dependencies]{outputs}} that will be updated by the callback.}
+
+\item{params}{An \code{\link[dash:dependencies]{input}} or a list of
+\code{\link[dash:dependencies]{inputs}} and \code{\link[dash:dependencies]{states}} that will fire
+the callback.}
+
+\item{callback}{A function that takes the inputs and states as arguments
+and returns the outputs.}
 }
 \description{
-Add a callback to a Dash app
+Dash apps are made interactive through callbacks; special functions that are
+automatically called whenever an input component's property changes.
 }

@@ -1,6 +1,15 @@
 #' Add a callback to a Dash app
 #'
+#' Dash apps are made interactive through callbacks; special functions that are
+#' automatically called whenever an input component's property changes.
 #' @param app A dash application created with [`dash_app()`].
+#' @param outputs An [`output`][dash::output()] or a list of
+#' [`outputs`][dash::output()] that will be updated by the callback.
+#' @param params An [`input`][dash::input()] or a list of
+#' [`inputs`][dash::input()] and [`states`][dash::state()] that will fire
+#' the callback.
+#' @param callback A function that takes the inputs and states as arguments
+#' and returns the outputs.
 #' @export
 add_callback <- function(app, outputs, params, callback) {
   if (inherits(params, "dash_dependency")) {
