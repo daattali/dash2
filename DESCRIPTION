@@ -18,6 +18,8 @@ Imports:
     utils
 Suggests: 
     testthat (>= 3.0.0)
+Remotes:
+    plotly/dashR
 License: MIT + file LICENSE
 LazyData: true
 Encoding: UTF-8
